@@ -11,7 +11,6 @@ import TextType from "./components/TextType"
 import ProposalCard from "./components/ProposalCard"
 import DateSelectionCard from "./components/DateSelectionCard"
 import SuccessCard from "./components/SuccessCard"
-import PersonalPill from "./PersonalPill"
 import MobileView from "./components/MobileView"
 import emailjs from "@emailjs/browser"
 
