@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect } from "react"
-import Lottie from "lottie-react"
 import gsap from "gsap"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import catAnimation from "../assets/animations/cat.json"
 
 type Props = {
     onDateSelected?: (date: Date) => void

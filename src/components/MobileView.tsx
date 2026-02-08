@@ -1,5 +1,3 @@
-import Lottie from "lottie-react"
-import catAnimation from "../assets/animations/cat.json"
 import { useEffect, useRef } from "react"
 import gsap from "gsap"
 import ThinkingCat from "./ThinkingCat"
@@ -33,7 +31,7 @@ export default function MobileView() {
             <div className="absolute -bottom-20 -right-20 size-64 bg-rose-200/30 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 flex flex-col items-center">
-                <ThinkingCat texts={["Hmmm... too cramped in here", "Miss P would love this, I promise! 🌹","Remember? your laptop? 💻"]} />
+                <ThinkingCat texts={["Hmmm... too cramped in here", "Miss P would love this, I promise! 🌹", "Remember? your laptop? 💻"]} />
 
 
                 <div ref={textRef} className="space-y-6 max-w-md">
