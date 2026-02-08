@@ -23,7 +23,7 @@ const EMAILJS_TEMPLATE_ID: string = "template_xz2egn7"
 const EMAILJS_PUBLIC_KEY: string = "RpRKQnO45IMtRwR-U"
 
 export default function App() {
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 1024 : false)
   const [selectedDate, setSelectedDate] = useState<Date>()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -185,9 +185,9 @@ export default function App() {
           <Lottie animationData={heartAnimation} loop autoplay />
         </div>
       </div>
-      <div className="flex items-start justify-start absolute top-[20px] right-[20px]">
+      {/* <div className="flex items-start justify-start absolute top-[20px] right-[20px]">
         <PersonalPill name="Alice Wanini" imageSrc={`${import.meta.env.BASE_URL}images/alice.jpeg`} />
-      </div>
+      </div> */}
 
       <MusicToggle
         audioRef={audioRef as any}
@@ -200,7 +200,7 @@ export default function App() {
       <section ref={containerRef} className="w-full h-full max-w-3xl space-y-8 flex flex-col items-center justify-center p-4">
         {!started ? (
           <SplitText
-            text="From Bubbah,"
+            text="To Alice Wanini,"
             className="text-4xl sm:text-5xl font-semibold text-rose-900 leading-tight cherry-font"
             delay={50}
             duration={1.25}
