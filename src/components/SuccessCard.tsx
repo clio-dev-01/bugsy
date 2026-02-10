@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react"
 import Lottie from "lottie-react"
 import gsap from "gsap"
-import kissAnimation from "../assets/animations/kiss.json"
+import kissAnimation from "../assets/animations/sheep.json"
 
 interface SuccessCardProps {
     date: Date | undefined
@@ -34,7 +34,7 @@ export default function SuccessCard({ date }: SuccessCardProps) {
                 <div className="absolute -top-10 -right-10 size-40 bg-rose-100/30 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-10 -left-10 size-40 bg-rose-100/30 rounded-full blur-3xl pointer-events-none" />
 
-                <div className="size-60 rounded-2xl overflow-hidden shadow-inner relative z-10">
+                <div className="size-60 rounded-2xl overflow-hidden relative z-10">
                     <Lottie animationData={kissAnimation} loop autoplay />
                 </div>
 

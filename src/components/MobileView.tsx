@@ -1,37 +1,19 @@
-import { useEffect, useRef } from "react"
-import gsap from "gsap"
+import { useRef } from "react"
 import ThinkingCat from "./ThinkingCat"
 
 export default function MobileView() {
-    const containerRef = useRef<HTMLDivElement>(null)
     const textRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        if (containerRef.current) {
-            gsap.fromTo(containerRef.current,
-                { opacity: 0 },
-                { opacity: 1, duration: 1, ease: "power2.out" }
-            )
-        }
-        if (textRef.current) {
-            gsap.fromTo(textRef.current.children,
-                { y: 20, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "back.out(1.7)", delay: 0.5 }
-            )
-        }
-    }, [])
 
     return (
         <div
-            ref={containerRef}
-            className="fixed inset-0 bg-linear-to-b from-rose-50 to-white flex flex-col items-center justify-center p-8 z-[9999] text-center overflow-hidden"
+            className="fixed inset-0 bg-linear-to-b from-rose-50 via-rose-50 to-white flex flex-col items-center justify-center p-8 z-[9999] text-center overflow-auto animate-in fade-in duration-1000"
         >
             {/* Decorative background blooms */}
             <div className="absolute -top-20 -left-20 size-64 bg-rose-100/40 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-20 -right-20 size-64 bg-rose-200/30 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 flex flex-col items-center">
-                <ThinkingCat texts={["Hmmm... too cramped in here", "Miss P would love this, I promise! 🌹", "Remember? your laptop? 💻"]} />
+                <ThinkingCat texts={["Hmmm... too cramped in here","Try your laptop", "I promise 'Miss P' will love this 🌹"]} />
 
 
                 <div ref={textRef} className="space-y-6 max-w-md">

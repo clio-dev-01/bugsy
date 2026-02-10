@@ -2,12 +2,11 @@ import { useState, useRef, useEffect } from "react"
 import Lottie from "lottie-react"
 import gsap from "gsap"
 import confetti from "canvas-confetti"
-import kissAnimation from "../assets/animations/kiss.json"
-import dogAnimation from "../assets/animations/dog-love.json"
+import kissAnimation from "../assets/animations/peas.json"
+import dogAnimation from "../assets/animations/love_birds.json"
 interface Props {
     question: string
     successQuestion?: string
-    yesAudio: string
     noAudios: string[]
     onYes?: () => void
     onNo?: (count: number) => void
@@ -18,9 +17,8 @@ interface Props {
 export default function ProposalCard({
     question,
     successQuestion = "Yay! I knew it! ❤️",
-    yesAudio,
-    noAudios,
     onYes,
+    noAudios,
     onNo,
     onContinue,
 }: Props) {
@@ -31,11 +29,10 @@ export default function ProposalCard({
     const rejectionMsgs = [
         "Okay... I'll wait. That stings a little.",
         "Oof. That one really hurt, not gonna lie.",
-        "I'm out of tears now. She has no choice anymore."
+        "I'm out of tears now. You have no choice anymore."
     ]
 
     // Audio refs
-    const yesAudioRef = useRef<HTMLAudioElement | null>(null)
     const noAudioRefs = useRef<(HTMLAudioElement | null)[]>([])
 
     // Initialize audio refs array based on noAudios length
@@ -89,10 +86,7 @@ export default function ProposalCard({
 
         stopPreviousAudio()
         // Play "Yes" audio 
-        if (yesAudioRef.current) {
-            yesAudioRef.current.currentTime = 0
-            yesAudioRef.current.play().catch(e => console.log("Yes audio play error", e))
-        }
+        
 
         // Confetti!
         const duration = 3000
@@ -140,7 +134,7 @@ export default function ProposalCard({
                 <div className="absolute -bottom-10 -left-10 size-40 bg-rose-100/30 rounded-full blur-3xl pointer-events-none" />
 
                 {/* Preload Audios */}
-                <audio ref={yesAudioRef} src={yesAudio} className="hidden" />
+                
                 {noAudios.map((src, i) => (
                     <audio
                         key={i}
@@ -152,7 +146,7 @@ export default function ProposalCard({
                     />
                 ))}
 
-                <div className="size-60 rounded-2xl overflow-hidden shadow-inner relative z-10">
+                <div className="size-60 rounded-2xl overflow-hidden relative z-10">
                     {noCount > 0 ? (
                         <img src={noGifs[noCount]} className="w-full h-full object-cover animate-fade-in" alt="" />
                     ) : (
@@ -165,7 +159,7 @@ export default function ProposalCard({
                         {yesPressed ? successQuestion : question}
                     </h2>
                     {noCount > 0 && (
-                        <p className="text-sm text-rose-500/70 cherry-font leading-relaxed">
+                        <p className="text-sm text-black/70 cherry-font leading-relaxed">
                             {rejectionMsgs[(noCount - 1) % rejectionMsgs.length]}
                         </p>
                     )}

@@ -12,9 +12,10 @@ import ProposalCard from "./components/ProposalCard"
 import DateSelectionCard from "./components/DateSelectionCard"
 import SuccessCard from "./components/SuccessCard"
 import MobileView from "./components/MobileView"
+import CollageOverlay from "./components/CollageOverlay"
 import emailjs from "@emailjs/browser"
 
-const NORMAL_CAT_TEXTS = ["What's this?", "Patra are you in there?", "Is it for me?", "Can I eat it?", "Maybe later..."]
+const NORMAL_CAT_TEXTS = ["What's this?", "Patra?", "Is it for me?", "Can I eat it?", "Maybe later..."]
 
 // YOU NEED TO FILL THESE IN FROM EMAILJS
 const EMAILJS_SERVICE_ID: string = "service_ulw7ejq"
@@ -22,7 +23,8 @@ const EMAILJS_TEMPLATE_ID: string = "template_xz2egn7"
 const EMAILJS_PUBLIC_KEY: string = "RpRKQnO45IMtRwR-U"
 
 export default function App() {
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 1024 : false)
+  const [hasChecked, setHasChecked] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date>()
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -30,13 +32,16 @@ export default function App() {
   const [enabled, setEnabled] = useState(false)
   const [started, setStarted] = useState(false)
   const [showProposal, setShowProposal] = useState(false)
+  const [showCollage, setShowCollage] = useState(false)
   const [showDateSelection, setShowDateSelection] = useState(false)
   const [showFinalMessage, setShowFinalMessage] = useState(false)
-  const [catTexts, setCatTexts] = useState(["Meow, catch the light", "Haha... too slow", "Need some help?"])
+  const [catTexts, setCatTexts] = useState(["Catch the light", "Haha... too slow", "Need some help?"])
+  const yesAudioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024)
+      setHasChecked(true)
     }
 
     checkMobile()
@@ -130,7 +135,10 @@ export default function App() {
           radius: Math.max(window.innerWidth, window.innerHeight) * 1.5,
           duration: 1.5,
           ease: "power2.out",
-          overwrite: true
+          overwrite: true,
+          onComplete: () => {
+            if (overlay) overlay.style.display = 'none'
+          }
         })
         window.removeEventListener("click", checkClick)
         handleGetStarted()
@@ -146,16 +154,23 @@ export default function App() {
       gsap.ticker.remove(applyMask)
       window.removeEventListener("click", checkClick)
     }
-  }, [])
+  }, [hasChecked, isMobile])
 
   const handleContinueToDate = () => {
     console.log("handleContinueToDate called - switching state immediately")
     setShowDateSelection(true)
   }
 
+  if (!hasChecked) {
+    return <div className="h-screen w-screen bg-pink-50" />
+  }
+
+  if (isMobile) {
+    return <MobileView />
+  }
+
   return (
-    <main className="h-screen min-w-screen bg-linear-to-br from-pink-50 to-pink-100 flex flex-col items-center relative overflow-hidden">
-      {isMobile && <MobileView />}
+    <main className="h-screen w-full bg-linear-to-br from-pink-50 to-pink-100 flex flex-col items-center relative overflow-hidden">
       <div
         ref={overlayRef}
         className="overlay absolute inset-0 bg-black/50 z-50 backdrop-blur-md pointer-events-none"
@@ -172,22 +187,25 @@ export default function App() {
         autoPlay
         muted
         onEnded={() => {
+          if (audioRef.current) {
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
+          }
           setEnabled(true)
           if (!started) setStarted(true)
           console.log("Audio ended, showing proposal...")
-          setShowProposal(true)
+          // setShowProposal(true)
+          setShowCollage(true)
         }}
       />
 
+      <audio ref={yesAudioRef} src={`${import.meta.env.BASE_URL}audio/happy.mp3`} className="hidden" />
+
       <div className="flex items-start justify-start absolute top-0 left-0">
-        <div className="w-85">
+        <div className="w-55">
           <Lottie animationData={heartAnimation} loop autoplay />
         </div>
       </div>
-      {/* <div className="flex items-start justify-start absolute top-[20px] right-[20px]">
-        <PersonalPill name="Alice Wanini" imageSrc={`${import.meta.env.BASE_URL}images/alice.jpeg`} />
-      </div> */}
-
       <MusicToggle
         audioRef={audioRef as any}
         enabled={enabled}
@@ -199,7 +217,7 @@ export default function App() {
       <section ref={containerRef} className="w-full h-full max-w-3xl space-y-8 flex flex-col items-center justify-center p-4">
         {!started ? (
           <SplitText
-            text="To Alice Wanini,"
+            text="To Wanini,"
             className="text-4xl sm:text-5xl font-semibold text-rose-900 leading-tight cherry-font"
             delay={50}
             duration={1.25}
@@ -213,7 +231,7 @@ export default function App() {
         ) : !showProposal ? (
           <TextType
             key="main"
-            text={["Hey Bugsy", "", "Aheeeem ...", "", "so I had a thought", "", "this could’ve been a text", "", "but here we are"]}
+            text={["Hey Bug", "", "Aheeeem ...", "", "so I had a thought", "", "this could’ve been a text", "", "but here we are"]}
             className="text-4xl sm:text-5xl font-semibold text-rose-900 leading-tight cherry-font text-center"
             typingSpeed={75}
             pauseDuration={1500}
@@ -223,7 +241,8 @@ export default function App() {
             cursorBlinkDuration={0.5}
             loop={false}
             onGlobalComplete={() => {
-              console.log("Typing complete, waiting for audio...")
+              // Pulse the "lights off" feeling by delaying the collage
+              // setTimeout(() => setShowCollage(true), 1500)
             }}
           />
         ) : !showDateSelection ? (
@@ -231,12 +250,17 @@ export default function App() {
             <ProposalCard
               question="Will you be my Valentine?"
               successQuestion="Yay! I knew it! ❤️"
-              yesAudio={`${import.meta.env.BASE_URL}audio/shrek.mp3`}
               noAudios={[
                 `${import.meta.env.BASE_URL}audio/dexter_ending.mp3`,
                 `${import.meta.env.BASE_URL}audio/minion.mp3`,
                 `${import.meta.env.BASE_URL}audio/change.mp3`
               ]}
+              onYes={() => {
+                if (yesAudioRef.current) {
+                  yesAudioRef.current.currentTime = 0
+                  yesAudioRef.current.play().catch(e => console.log("Yes audio play error", e))
+                }
+              }}
               onContinue={handleContinueToDate}
             />
           </div>
@@ -271,9 +295,16 @@ export default function App() {
         )}
       </section>
 
-      <div className="w-110 absolute bottom-0 right-0 z-100 pointer-events-none">
+      <div className=" absolute bottom-0 right-0 z-100 pointer-events-none">
         <ThinkingCat texts={catTexts} />
       </div>
+
+      {showCollage && (
+        <CollageOverlay
+          onProposalReady={() => setShowProposal(true)}
+          onHidden={() => setShowCollage(false)}
+        />
+      )}
     </main>
   )
 }
